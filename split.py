@@ -7,12 +7,15 @@ def is_ip(address):
     return bool(ip_pattern.match(address))
 
 # Lire le fichier Excel
-file_path = 'votre_fichier.xlsx'  # Remplacez par le chemin de votre fichier
+file_path = 'votre_fichier.xlsx'  
 df = pd.read_excel(file_path)
 
 # Extraire les domaines et filtrer les IPs
 domains = df['domain']
 filtered_domains = [domain for domain in domains if not is_ip(domain)]
+
+# Trier les domaines par ordre alphabétique
+filtered_domains.sort()
 
 # Écrire les domaines dans des fichiers texte, 80 domaines par fichier
 file_count = 1
