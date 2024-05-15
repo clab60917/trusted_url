@@ -1,21 +1,29 @@
+# pip install msedge-selenium-tools selenium pandas openpyxl
+
 import os
 import time
 import pandas as pd
-from selenium import webdriver
+from msedge.selenium_tools import Edge, EdgeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 # Configuration
-input_directory = 'path_to_your_txt_files'  # Remplacez par le chemin de votre répertoire
-output_file = 'output_domains_categories.xlsx'  # Le fichier final
+input_directory = r'C:\path\to\your\txt\files'  # Utilisez une chaîne brute pour éviter les problèmes d'échappement
+output_file = r'C:\path\to\your\output_domains_categories.xlsx'  # Utilisez une chaîne brute
 username = 'your_username'  # Remplacez par votre nom d'utilisateur
 password = 'your_password'  # Remplacez par votre mot de passe
 
+# Chemin vers le Edge WebDriver
+edge_driver_path = r'C:\path\to\edgedriver.exe'  # Remplacez par le chemin correct
+
+# Configuration des options pour Edge
+options = EdgeOptions()
+options.use_chromium = True  # Utiliser Chromium
+
 # Initialisation du WebDriver
-driver = webdriver.Chrome(executable_path='/path/to/chromedriver')  # Remplacez par le chemin vers votre chromedriver
+driver = Edge(executable_path=edge_driver_path, options=options)
 
 def login_to_trustedsource():
     driver.get('https://trustedsource.org/en/feedback/url?action=checklist&sid=91C3B70BFCACD9BFDB84568175B5A3E2')
