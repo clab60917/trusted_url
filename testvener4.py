@@ -8,6 +8,7 @@ from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import tempfile
 
 # Configuration
 input_file = r'C:\Users\X248317\Desktop\Code\trusted_url\domains_5.txt'  # Chemin du fichier de noms de domaine sur Windows
@@ -24,17 +25,20 @@ options = EdgeOptions()
 options.use_chromium = True
 options.binary_location = edge_binary_path
 
-# Rediriger stderr vers null pour ignorer les erreurs répétitives
-original_stderr = sys.stderr
-sys.stderr = open(os.devnull, 'w')
+def redirect_stderr():
+    """Context manager to redirect stderr to a temporary file."""
+    temp_file = tempfile.TemporaryFile(mode='w+', encoding='utf-8')
+    original_stderr = sys.stderr
+    sys.stderr = temp_file
+    yield
+    sys.stderr = original_stderr
+    temp_file.close()
 
-# Initialisation du WebDriver
-service = EdgeService(executable_path=edge_driver_path)
-driver = webdriver.Edge(service=service, options=options)
-
-# Restaurer stderr
-sys.stderr.close()
-sys.stderr = original_stderr
+# Utilisation du context manager pour rediriger stderr
+with redirect_stderr():
+    # Initialisation du WebDriver
+    service = EdgeService(executable_path=edge_driver_path)
+    driver = webdriver.Edge(service=service, options=options)
 
 def select_product_and_check_url(domain):
     max_attempts = 3
@@ -71,7 +75,7 @@ def select_product_and_check_url(domain):
             print("Check URL button clicked.")
 
             # Attendre que le résultat s'affiche
-            WebDriverWait(driver, 20).until(
+            WebDriverWait(driver, 10).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, 'table.result-table'))
             )
             print("Results table found.")
@@ -117,6 +121,8 @@ def main():
             data = [[domain, '', '', '']]
         all_data.extend(data)
         # Attendre 15 secondes entre chaque requête pour éviter le bannissement de l'IP
+        time.sleep(15)
+        # Pause de 4 secondes entre chaque domaine
         time.sleep(4)
 
     # Débogage : Afficher les données extraites
