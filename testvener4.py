@@ -8,7 +8,6 @@ from selenium.webdriver.edge.options import Options as EdgeOptions
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import tempfile
 
 # Configuration
 input_file = r'C:\Users\X248317\Desktop\Code\trusted_url\domains_5.txt'  # Chemin du fichier de noms de domaine sur Windows
@@ -25,20 +24,19 @@ options = EdgeOptions()
 options.use_chromium = True
 options.binary_location = edge_binary_path
 
-def redirect_stderr():
-    """Context manager to redirect stderr to a temporary file."""
-    temp_file = tempfile.TemporaryFile(mode='w+', encoding='utf-8')
-    original_stderr = sys.stderr
-    sys.stderr = temp_file
-    yield
-    sys.stderr = original_stderr
-    temp_file.close()
+# Rediriger stderr vers un fichier temporaire pour ignorer les erreurs répétitives
+original_stderr = sys.stderr
+sys.stderr = open(os.devnull, 'w')
 
-# Utilisation du context manager pour rediriger stderr
-with redirect_stderr():
-    # Initialisation du WebDriver
-    service = EdgeService(executable_path=edge_driver_path)
-    driver = webdriver.Edge(service=service, options=options)
+# Initialisation du WebDriver
+service = EdgeService(executable_path=edge_driver_path)
+driver = webdriver.Edge(service=service, options=options)
+
+# Restaurer stderr à la fin de l'exécution
+def restore_stderr():
+    global original_stderr
+    sys.stderr.close()
+    sys.stderr = original_stderr
 
 def select_product_and_check_url(domain):
     max_attempts = 3
@@ -145,6 +143,7 @@ def main():
     # Fermer le navigateur
     driver.quit()
     print("Browser closed.")
+    restore_stderr()
 
 if __name__ == "__main__":
     main()
