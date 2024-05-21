@@ -98,7 +98,6 @@ def main():
         data = select_product_and_check_url(domain)
         all_data.extend(data)
         # Attendre 15 secondes entre chaque requête pour éviter le bannissement de l'IP
-        time.sleep(15)
         # Pause de 4 secondes entre chaque domaine
         time.sleep(4)
 
