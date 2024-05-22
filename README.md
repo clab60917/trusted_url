@@ -1,13 +1,12 @@
 
-# Trusted URL 
-
+# Trusted URL
 
 ## Introduction
 
-Ce projet contient trois scripts Python permettant de traiter des noms de domaines et de les catégoriser automatiquement en utilisant Selenium pour interagir avec un site web externe. Les scripts accomplissent les tâches suivantes :
-1. Découper une liste de domaines en plusieurs fichiers `txt`.
-2. Utiliser Selenium pour catégoriser les domaines et sauvegarder les résultats.
-3. Combiner les résultats et mettre à jour un fichier Excel original avec les nouvelles catégories.
+Ce projet a pour but de trier les domaines whitelistés au niveau d'un proxy de chez Skylight Security (anciennement McAfee). Il contient trois scripts Python permettant de traiter des noms de domaines et de les catégoriser automatiquement en utilisant Selenium pour interagir avec un site web externe. Les scripts accomplissent les tâches suivantes :
+1. **Découper une liste de domaines** en plusieurs fichiers `txt`.
+2. **Utiliser Selenium pour catégoriser les domaines** et sauvegarder les résultats.
+3. **Combiner les résultats** et mettre à jour un fichier Excel original avec les nouvelles catégories.
 
 ## Prérequis
 
