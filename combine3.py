@@ -16,6 +16,10 @@ for file in all_files:
 
 df_combined = pd.concat(df_list, ignore_index=True)
 
+# Supprimer le préfixe 'http://' des domaines et nettoyer les catégories
+df_combined['Domain'] = df_combined['Domain'].str.replace(r'^http://', '', regex=True)
+df_combined['Categorization'] = df_combined['Categorization'].str.replace(r'^-\s*', '', regex=True)
+
 # Enregistrer le fichier combiné (optionnel)
 df_combined.to_excel('combined_output_domains_categories.xlsx', index=False)
 print("Tous les fichiers de sortie ont été combinés avec succès.")
