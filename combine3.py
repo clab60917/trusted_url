@@ -27,13 +27,25 @@ df_original = pd.read_excel(original_file, sheet_name='SGT')
 # Créer un dictionnaire pour une recherche rapide des catégories par domaine
 domain_to_category = dict(zip(df_combined['Domain'], df_combined['Categorization']))
 
+# Diagnostique : vérifier quelques valeurs du dictionnaire
+print("Exemple du dictionnaire des domaines à catégories :")
+for domain in list(domain_to_category.keys())[:5]:
+    print(f"{domain}: {domain_to_category[domain]}")
+
 # Mettre à jour la colonne "Categorie" dans le fichier original
 def update_category(row):
     domain = row['domain']
-    return domain_to_category.get(domain, row['Categorie'])  # Conserver la valeur existante si non trouvée
+    category = domain_to_category.get(domain)
+    if category:
+        print(f"Mise à jour de la catégorie pour le domaine {domain}: {category}")
+    return category if category else row['Categorie']  # Conserver la valeur existante si non trouvée
 
-# Vérifier et mettre à jour la colonne 'Categorie' (colonne M) dans df_original
+# Ajouter une nouvelle colonne 'Categorie' mise à jour
 df_original['Categorie'] = df_original.apply(update_category, axis=1)
+
+# Diagnostique : vérifier quelques valeurs mises à jour
+print("Exemple des catégories mises à jour :")
+print(df_original[['domain', 'Categorie']].head())
 
 # Charger toutes les feuilles du fichier original
 sheets = {sheet_name: pd.read_excel(original_file, sheet_name=sheet_name) for sheet_name in excel_original.sheet_names}
