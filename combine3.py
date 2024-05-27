@@ -32,7 +32,7 @@ def update_category(row):
     domain = row['domain']
     return domain_to_category.get(domain, row['Categorie'])  # Conserver la valeur existante si non trouvée
 
-# Ajouter une nouvelle colonne 'Categorie' mise à jour
+# Vérifier et mettre à jour la colonne 'Categorie' (colonne M) dans df_original
 df_original['Categorie'] = df_original.apply(update_category, axis=1)
 
 # Charger toutes les feuilles du fichier original
