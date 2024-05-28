@@ -54,8 +54,6 @@ def update_category(row):
     category = domain_to_category.get(matched_domain)
     if category:
         print(f"Mise à jour de la catégorie pour le domaine {domain}: {category}")
-    else:
-        print(f"Aucune catégorie trouvée pour le domaine {domain}")
     return category if category else row['Categorie']  # Conserver la valeur existante si non trouvée
 
 # Ajouter une nouvelle colonne 'Categorie' mise à jour
