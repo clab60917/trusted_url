@@ -32,9 +32,10 @@ df_original = pd.read_excel(original_file, sheet_name='SGT')
 # Fonction pour trouver la meilleure correspondance
 def match_domain(truncated_domain, domain_list):
     if truncated_domain.endswith('...'):
-        truncated_domain = truncated_domain[:-3]
-        matches = [d for d in domain_list if d.startswith(truncated_domain)]
+        truncated_domain_base = truncated_domain[:-3]
+        matches = [d for d in domain_list if d.startswith(truncated_domain_base)]
         if matches:
+            print(f"Match found: {truncated_domain} => {matches[0]}")
             return matches[0]
     return truncated_domain
 
@@ -53,6 +54,8 @@ def update_category(row):
     category = domain_to_category.get(matched_domain)
     if category:
         print(f"Mise à jour de la catégorie pour le domaine {domain}: {category}")
+    else:
+        print(f"Aucune catégorie trouvée pour le domaine {domain}")
     return category if category else row['Categorie']  # Conserver la valeur existante si non trouvée
 
 # Ajouter une nouvelle colonne 'Categorie' mise à jour
