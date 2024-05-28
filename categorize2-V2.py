@@ -12,8 +12,8 @@ from selenium.common.exceptions import TimeoutException
 from tqdm import tqdm
 
 # Configuration
-input_dir = 'domains_txt_files'  # Répertoire contenant les fichiers .txt de domaines
-output_file_template = 'output_domains_categories{}.xlsx'  # Modèle pour les fichiers de sortie
+input_file = 'path_to_input_file.txt'  # Chemin vers le fichier .txt de domaines
+output_file = 'output_domains_categories.xlsx'  # Fichier de sortie
 edge_driver_path = 'path_to_your_msedgedriver'  # Chemin vers msedgedriver
 edge_binary_path = 'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe'  # Chemin vers le binaire de Microsoft Edge
 
@@ -108,40 +108,33 @@ def select_product_and_check_url(domain):
     return [[domain, '', '', '']]  # Retourner des valeurs vides si échec
 
 def main():
-    # Parcourir les fichiers de domaines
-    for file_index, file_name in enumerate(sorted(os.listdir(input_dir))):
-        if not file_name.endswith('.txt'):
-            continue
+    print(f"Processing file: {input_file}")
 
-        print(f"Processing file: {file_name}")
-        input_file = os.path.join(input_dir, file_name)
-        output_file = output_file_template.format(file_index + 1)
+    all_data = []
 
-        all_data = []
+    # Lire les domaines à partir du fichier texte
+    with open(input_file, 'r') as file:
+        domains = [line.strip() for line in file.readlines()]
 
-        # Lire les domaines à partir du fichier texte
-        with open(input_file, 'r') as file:
-            domains = [line.strip() for line in file.readlines()]
+    # Progress bar
+    pbar = tqdm(total=len(domains), desc="Processing domains")
 
-        # Progress bar
-        pbar = tqdm(total=len(domains), desc=f"Processing {file_name}")
+    for domain in domains:
+        # Extraire les données pour le domaine actuel
+        data = select_product_and_check_url(domain)
+        all_data.extend(data)
 
-        for domain in domains:
-            # Extraire les données pour le domaine actuel
-            data = select_product_and_check_url(domain)
-            all_data.extend(data)
+        # Mettre à jour la barre de progression
+        pbar.update(1)
+        # Pause entre chaque domaine pour éviter d'être bloqué
+        time.sleep(15)
 
-            # Mettre à jour la barre de progression
-            pbar.update(1)
-            # Pause entre chaque domaine pour éviter d'être bloqué
-            time.sleep(15)
+    pbar.close()
 
-        pbar.close()
-
-        # Sauvegarder les résultats dans un fichier Excel
-        df = pd.DataFrame(all_data, columns=['Domain', 'Status', 'Categorization', 'Reputation'])
-        df.to_excel(output_file, index=False)
-        print(f"Results saved to {output_file}")
+    # Sauvegarder les résultats dans un fichier Excel
+    df = pd.DataFrame(all_data, columns=['Domain', 'Status', 'Categorization', 'Reputation'])
+    df.to_excel(output_file, index=False)
+    print(f"Results saved to {output_file}")
 
     print("Processing completed.")
     driver.quit()
