@@ -26,7 +26,7 @@ domain_to_status = dict(zip(df_combined['Domain'], df_combined['Status']))
 def update_category(row):
     domain = row['domain']
     category = domain_to_category.get(domain, row['Categorie'])
-    if category.startswith('-'):
+    if isinstance(category, str) and category.startswith('-'):
         category = category[1:].strip()
     return category
 
