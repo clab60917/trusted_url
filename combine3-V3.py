@@ -25,7 +25,10 @@ domain_to_status = dict(zip(df_combined['Domain'], df_combined['Status']))
 # Mettre à jour la colonne "Categorie" et ajouter la colonne "Status-Bis" dans le fichier original
 def update_category(row):
     domain = row['domain']
-    return domain_to_category.get(domain, row['Categorie'])  # Conserver la valeur existante si non trouvée
+    category = domain_to_category.get(domain, row['Categorie'])
+    if category.startswith('-'):
+        category = category[1:].strip()
+    return category
 
 def update_status(row):
     domain = row['domain']
